@@ -1,8 +1,8 @@
-Dashboard de Telemetria - Instrumentação Eletrônica
+# Dashboard de Telemetria - Instrumentação Eletrônica
 
 Dashboard web em React para visualização em tempo real de dados de sensores transmitidos via Wi-Fi por um ESP32.
 
-Como Executar:
+# Como Executar:
 
 # Clone o repositório
 git clone https://github.com/Priisciila/Dashboard-Instrumentacao-Eletronica-.git
