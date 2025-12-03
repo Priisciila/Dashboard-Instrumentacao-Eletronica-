@@ -1,4 +1,5 @@
 import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts'
+import { formatNumber } from '../utils/formatNumber.js'; // Adicionada extensão .js
 
 function SensorChart({ data, dataKey, color, title }) {
   return (
@@ -21,6 +22,7 @@ function SensorChart({ data, dataKey, color, title }) {
               border: '1px solid #333',
               borderRadius: '8px'
             }}
+            formatter={(value) => [formatNumber(value), dataKey === 'temp' ? 'Temperatura' : 'Aceleração']}
           />
           <Area
             type="monotone"

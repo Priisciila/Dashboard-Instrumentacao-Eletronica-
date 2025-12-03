@@ -9,6 +9,8 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "cors": "^2.8.5",
+    "express": "^5.2.1",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "recharts": "^2.8.0"
@@ -21,5 +23,18 @@
     "postcss": "^8.4.27",
     "tailwindcss": "^3.3.3",
     "vite": "^4.4.5"
-  }
+  },
+  "description": "Dashboard web em React para visualização em tempo real de dados de sensores transmitidos via Wi-Fi por um ESP32.",
+  "main": "postcss.config.js",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Priisciila/Dashboard-Instrumentacao-Eletronica-.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Priisciila/Dashboard-Instrumentacao-Eletronica-/issues"
+  },
+  "homepage": "https://github.com/Priisciila/Dashboard-Instrumentacao-Eletronica-#readme"
 }
