@@ -7,7 +7,7 @@ import Header from './components/Header.jsx'
 import './App.css'
 import { formatNumber } from './utils/formatNumber.js';
 
-const API_URL = 'http://localhost:4000/sensores'; 
+const API_URL = '/sensores'; 
 
 // Estado inicial compatível com o JSON do ESP32
 const initialData = {

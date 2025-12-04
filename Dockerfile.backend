@@ -1,0 +1,23 @@
+# Use official Node.js image
+FROM node:18-alpine
+
+# Set working directory
+WORKDIR /app
+
+# Copy package files first to leverage cache
+COPY package*.json ./
+
+# Install dependencies (production only to save space, but we might need devDeps for build if we were building here. 
+# Since this is just running server.js which likely uses express, we install all for safety or just production if separated.
+# Given package.json has devDependencies for frontend, we should be careful.
+# server.js imports express, cors, os. These are in 'dependencies'.
+RUN npm install --omit=dev
+
+# Copy the rest of the application code
+COPY . .
+
+# Expose the backend port
+EXPOSE 4000
+
+# Start the server
+CMD ["node", "server.js"]
