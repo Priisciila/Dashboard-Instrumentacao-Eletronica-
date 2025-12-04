@@ -114,7 +114,7 @@ function App() {
           title="Acelerômetro"
           icon="📊"
           data={currentData.acelerometro}
-          unit="m/s²"
+          unit="g"
           color="from-blue-500 to-cyan-500"
           glowClass="glow-blue"
         />
