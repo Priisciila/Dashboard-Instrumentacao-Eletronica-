@@ -130,7 +130,7 @@ function App() {
           title="Magnetômetro"
           icon="🧭"
           data={currentData.magnetometro}
-          unit="uT"
+          unit="T"
           color="from-purple-500 to-pink-500"
           glowClass="glow-purple"
         />
