@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import SensorCard from './components/SensorCard.jsx'
 import EnvironmentCard from './components/EnvironmentCard.jsx'
 import SensorChart from './components/SensorChart.jsx'
@@ -26,6 +26,7 @@ function App() {
   const [isConnected, setIsConnected] = useState(false)
   const [updateCount, setUpdateCount] = useState(0)
   const [errorMessage, setErrorMessage] = useState(null)
+  const lastTimestampRef = useRef(null);
 
   const fetchData = async () => {
     try {
@@ -47,7 +48,13 @@ function App() {
       };
 
       setCurrentData(processedData);
-      setUpdateCount(prev => prev + 1);
+      
+      // Só incrementa contador se o timestamp mudou (novo pacote)
+      if (processedData.timestamp && processedData.timestamp !== lastTimestampRef.current) {
+        setUpdateCount(prev => prev + 1);
+        lastTimestampRef.current = processedData.timestamp;
+      }
+      
       setIsConnected(true);
       setErrorMessage(null);
 
