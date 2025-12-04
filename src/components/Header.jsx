@@ -10,7 +10,7 @@ function Header({ isConnected, updateCount }) {
           <p className="text-gray-400 text-sm">Instrumentação Eletrônica</p>
         </div>
       </div>
-      <div className="flex items-center gap-6">
+      <div className="flex flex-col sm:flex-row items-center gap-4 sm:gap-6">
         <div className="flex items-center gap-2">
           <div className={`w-3 h-3 rounded-full ${isConnected ? 'bg-green-500 pulse-dot' : 'bg-red-500'}`}></div>
           <span className="text-gray-300 text-sm">{isConnected ? 'Conectado' : 'Desconectado'}</span>
