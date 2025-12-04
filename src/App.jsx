@@ -54,6 +54,11 @@ function App() {
         setUpdateCount(prev => prev + 1);
         lastTimestampRef.current = processedData.timestamp;
       }
+
+      // Se o backend mandou resetar o contador
+      if (rawData.reset) {
+        setUpdateCount(0);
+      }
       
       setIsConnected(true);
       setErrorMessage(null);

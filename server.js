@@ -53,7 +53,8 @@ app.post('/sensores', (req, res) => {
             ...latestSensorData, // Mantém campos antigos se faltar algo
             ...req.body,         // Sobrescreve com os dados novos do ESP
             timestamp: new Date().toISOString(),
-            status: 'CONECTADO'
+            status: 'CONECTADO',
+            reset: false
         };
 
         // Reinicia o timer de timeout
@@ -71,6 +72,7 @@ app.post('/sensores', (req, res) => {
                 latestSensorData = {
                     timestamp: null,
                     status: 'AGUARDANDO DADOS...',
+                    reset: true, // Flag para avisar o frontend para zerar o contador
                     acelerometro: { x: 0, y: 0, z: 0 },
                     giroscopio: { x: 0, y: 0, z: 0 },
                     magnetometro: { x: 0, y: 0, z: 0 },
