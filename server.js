@@ -10,7 +10,7 @@ const PORT = 4000;
 // 1. Inicializa os dados com a estrutura EXATA que o ESP32 envia (baseado no seu código C)
 // Isso evita que o frontend quebre se tentar ler "bmp180.temperatura" antes do primeiro envio.
 let latestSensorData = {
-    timestamp: new Date().toISOString(),
+    timestamp: null,
     status: 'AGUARDANDO DADOS...',
     acelerometro: { x: 0, y: 0, z: 0 },
     giroscopio: { x: 0, y: 0, z: 0 },
@@ -18,6 +18,9 @@ let latestSensorData = {
     bmp180: { temperatura: 0, pressao: 0 },
     orientation: { pitch: 0, roll: 0, yaw: 0, altitude: 0 }
 };
+
+let connectionTimeout = null;
+let dataResetTimeout = null;
 
 app.use(cors());
 app.use(express.json()); 
@@ -52,6 +55,31 @@ app.post('/sensores', (req, res) => {
             timestamp: new Date().toISOString(),
             status: 'CONECTADO'
         };
+
+        // Reinicia o timer de timeout
+        if (connectionTimeout) clearTimeout(connectionTimeout);
+        if (dataResetTimeout) clearTimeout(dataResetTimeout);
+
+        connectionTimeout = setTimeout(() => {
+            console.log(`\n[TIMEOUT] Sem dados por 4s. Status alterado para AGUARDANDO DADOS...`);
+            latestSensorData.status = 'AGUARDANDO DADOS...';
+            latestSensorData.timestamp = null;
+
+            // Inicia timer para zerar os dados após 20s de "AGUARDANDO DADOS..."
+            dataResetTimeout = setTimeout(() => {
+                console.log(`\n[RESET] Sem dados por +20s. Zerando valores dos sensores.`);
+                latestSensorData = {
+                    timestamp: null,
+                    status: 'AGUARDANDO DADOS...',
+                    acelerometro: { x: 0, y: 0, z: 0 },
+                    giroscopio: { x: 0, y: 0, z: 0 },
+                    magnetometro: { x: 0, y: 0, z: 0 },
+                    bmp180: { temperatura: 0, pressao: 0 },
+                    orientation: { pitch: 0, roll: 0, yaw: 0, altitude: 0 }
+                };
+            }, 20000);
+
+        }, 4000);
 
         console.log(`\n[POST] Dados recebidos do ESP32 em /sensores às ${new Date().toLocaleTimeString()}`);
         // console.log(JSON.stringify(req.body, null, 2)); // Debug: mostra o JSON recebido
