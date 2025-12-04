@@ -92,7 +92,7 @@ function App() {
       <Header isConnected={isConnected} updateCount={updateCount} /> 
 
       {/* Status Bar */}
-      <div className="glass rounded-xl p-3 mb-6 flex items-center justify-between">
+      <div className="glass rounded-xl p-3 mb-6 flex flex-col md:flex-row items-center justify-between gap-2">
         <div className="flex items-center gap-2">
           <span className="text-gray-400 text-sm">📡 Status:</span>
           {errorMessage ? (

@@ -1,6 +1,6 @@
 function Header({ isConnected, updateCount }) {
   return (
-    <header className="glass rounded-xl p-4 mb-6 flex items-center justify-between">
+    <header className="glass rounded-xl p-4 mb-6 flex flex-col md:flex-row items-center justify-between gap-4">
       <div className="flex items-center gap-4">
         <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center text-2xl">
           📡
