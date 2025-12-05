@@ -27,6 +27,7 @@ function App() {
   const [updateCount, setUpdateCount] = useState(0)
   const [errorMessage, setErrorMessage] = useState(null)
   const lastTimestampRef = useRef(null);
+  const fullHistoryRef = useRef([]);
 
   const fetchData = async () => {
     try {
@@ -53,6 +54,9 @@ function App() {
       if (processedData.timestamp && processedData.timestamp !== lastTimestampRef.current) {
         setUpdateCount(prev => prev + 1);
         lastTimestampRef.current = processedData.timestamp;
+        
+        // Adiciona ao histórico completo para salvar depois
+        fullHistoryRef.current.push(processedData);
       }
 
       // Se o backend mandou resetar o contador
@@ -99,6 +103,54 @@ function App() {
     return 'text-gray-500';
   };
 
+  const handleSaveHistory = async () => {
+    if (fullHistoryRef.current.length === 0) {
+      alert("Não há dados para salvar ainda.");
+      return;
+    }
+
+    // Cabeçalho do arquivo
+    let content = "Timestamp\tStatus\tTemp(C)\tPressao(Pa)\tAccelX\tAccelY\tAccelZ\tGiroX\tGiroY\tGiroZ\tMagX\tMagY\tMagZ\tPitch\tRoll\tYaw\tAltitude\n";
+
+    // Linhas de dados
+    fullHistoryRef.current.forEach(d => {
+      const time = d.timestamp ? new Date(d.timestamp).toLocaleString('pt-BR') : 'N/A';
+      const line = `${time}\t${d.status}\t${d.bmp180.temperatura}\t${d.bmp180.pressao}\t${d.acelerometro.x}\t${d.acelerometro.y}\t${d.acelerometro.z}\t${d.giroscopio.x}\t${d.giroscopio.y}\t${d.giroscopio.z}\t${d.magnetometro.x}\t${d.magnetometro.y}\t${d.magnetometro.z}\t${d.orientation.pitch}\t${d.orientation.roll}\t${d.orientation.yaw}\t${d.orientation.altitude}\n`;
+      content += line;
+    });
+
+    try {
+      // Tenta usar a API moderna de File System Access (Chrome/Edge)
+      if (window.showSaveFilePicker) {
+        const handle = await window.showSaveFilePicker({
+          suggestedName: `historico_leituras_${new Date().toISOString().slice(0,19).replace(/:/g,'-')}.txt`,
+          types: [{
+            description: 'Arquivo de Texto',
+            accept: { 'text/plain': ['.txt'] },
+          }],
+        });
+        const writable = await handle.createWritable();
+        await writable.write(content);
+        await writable.close();
+      } else {
+        // Fallback para download clássico
+        const blob = new Blob([content], { type: 'text/plain;charset=utf-8' });
+        const url = URL.createObjectURL(blob);
+        const link = document.createElement('a');
+        link.href = url;
+        link.download = `historico_leituras_${new Date().toISOString().slice(0,19).replace(/:/g,'-')}.txt`;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+      }
+    } catch (err) {
+      if (err.name !== 'AbortError') {
+        console.error('Erro ao salvar:', err);
+        alert('Erro ao salvar arquivo.');
+      }
+    }
+  };
+
   return (
     <div className="min-h-screen p-6 bg-[#0a0a0f]">
       <Header isConnected={isConnected} updateCount={updateCount} /> 
@@ -115,8 +167,17 @@ function App() {
             </span>
           )}
         </div>
-        <div className="mono text-gray-500 text-sm">
-          {currentData.timestamp ? new Date(currentData.timestamp).toLocaleString('pt-BR') : '--/--/----'}
+        
+        <div className="flex items-center gap-4">
+            <button 
+                onClick={handleSaveHistory}
+                className="bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold py-1 px-3 rounded transition-colors flex items-center gap-1"
+            >
+                💾 Salvar Histórico
+            </button>
+            <div className="mono text-gray-500 text-sm">
+            {currentData.timestamp ? new Date(currentData.timestamp).toLocaleString('pt-BR') : '--/--/----'}
+            </div>
         </div>
       </div>
 
